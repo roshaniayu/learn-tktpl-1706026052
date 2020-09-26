@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Lab Activities</string>
+    <string name="hello_text">Hello World!</string>
+    <string name="desc_text">This is my first android app :)</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="hello_text_dark">Goodnight World!</string>
+    <string name="desc_text_dark">See you on the next activity :)</string>
+    <string name="light_mode">Light Mode</string>
+</resources>
