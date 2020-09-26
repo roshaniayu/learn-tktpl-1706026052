@@ -1,6 +1,5 @@
 package id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld
 
-import android.util.Log
 import org.junit.Test
 import org.junit.Assert.*
 
