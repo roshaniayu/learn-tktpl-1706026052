@@ -18,19 +18,22 @@ import org.junit.Rule
  */
 @RunWith(AndroidJUnit4::class)
 class HelloWorldInstrumentedTest {
+    private val helloWorldText = "Hello World!"
+    private val goodnightWorldText = "Goodnight World!"
+
     @get:Rule
     var activityRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
     fun whenButtonIsNotClickedItIsLightMode() {
         Espresso.onView(ViewMatchers.withId(R.id.helloText))
-            .check(ViewAssertions.matches(ViewMatchers.withText("Hello World!")))
+            .check(ViewAssertions.matches(ViewMatchers.withText(helloWorldText)))
     }
 
     @Test
     fun whenButtonIsClickedItIsDarkMode() {
         Espresso.onView(ViewMatchers.withId(R.id.modeButton)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.helloText))
-            .check(ViewAssertions.matches(ViewMatchers.withText("Goodnight World!")))
+            .check(ViewAssertions.matches(ViewMatchers.withText(goodnightWorldText)))
     }
 }
