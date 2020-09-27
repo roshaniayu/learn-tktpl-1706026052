@@ -41,7 +41,7 @@ class HelloWorldInstrumentedTest {
 
     @Test
     fun whenButtonIsClickedItIsDarkMode() {
-        // Click night mode button
+        // Click dark mode button
         onView(ViewMatchers.withId(R.id.modeButton)).perform(ViewActions.click())
         // Check goodnight world text
         onView(ViewMatchers.withId(R.id.helloText))
