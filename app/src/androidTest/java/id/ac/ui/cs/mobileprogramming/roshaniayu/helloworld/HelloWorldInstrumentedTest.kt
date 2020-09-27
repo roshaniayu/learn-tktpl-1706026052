@@ -1,11 +1,12 @@
 package id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld
 
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Before
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,22 +19,32 @@ import org.junit.Rule
  */
 @RunWith(AndroidJUnit4::class)
 class HelloWorldInstrumentedTest {
-    private val helloWorldText = "Hello World!"
-    private val goodnightWorldText = "Goodnight World!"
+    private lateinit var helloWorldText: String
+    private lateinit var goodnightWorldText: String
 
     @get:Rule
     var activityRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
 
+    @Before
+    fun initString() {
+        // Specify a valid string
+        helloWorldText = "Hello World!"
+        goodnightWorldText = "Goodnight World!"
+    }
+
     @Test
     fun whenButtonIsNotClickedItIsLightMode() {
-        Espresso.onView(ViewMatchers.withId(R.id.helloText))
+        // Check hello world text
+        onView(ViewMatchers.withId(R.id.helloText))
             .check(ViewAssertions.matches(ViewMatchers.withText(helloWorldText)))
     }
 
     @Test
     fun whenButtonIsClickedItIsDarkMode() {
-        Espresso.onView(ViewMatchers.withId(R.id.modeButton)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.helloText))
+        // Click night mode button
+        onView(ViewMatchers.withId(R.id.modeButton)).perform(ViewActions.click())
+        // Check goodnight world text
+        onView(ViewMatchers.withId(R.id.helloText))
             .check(ViewAssertions.matches(ViewMatchers.withText(goodnightWorldText)))
     }
 }

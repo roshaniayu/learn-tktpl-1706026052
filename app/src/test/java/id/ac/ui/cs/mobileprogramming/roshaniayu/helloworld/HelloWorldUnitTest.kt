@@ -2,6 +2,7 @@ package id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld
 
 import org.junit.Test
 import org.junit.Assert.*
+import org.junit.Before
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -9,9 +10,17 @@ import org.junit.Assert.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class HelloWorldUnitTest {
-    private val goodnightWorldText = "Goodnight World!"
-    private val descriptionText = "See you on the next activity :)"
-    private val lightModeText = "Light Mode"
+    private lateinit var goodnightWorldText: String
+    private lateinit var descriptionText: String
+    private lateinit var lightModeText: String
+
+    @Before
+    fun initString() {
+        // Specify a valid string
+        goodnightWorldText = "Goodnight World!"
+        descriptionText = "See you on the next activity :)"
+        lightModeText = "Light Mode"
+    }
 
     @Test
     fun getHelloWordsFunctionReturnsString() {

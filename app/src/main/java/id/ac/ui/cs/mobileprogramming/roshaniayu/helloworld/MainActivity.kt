@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // when button clicks
+        // When button clicks
         val modeButton = findViewById<Button>(R.id.modeButton)
         modeButton.setOnClickListener {
             buttonModeClickListener()
@@ -28,24 +28,24 @@ class MainActivity : AppCompatActivity() {
         val modeButton = findViewById<Button>(R.id.modeButton)
 
         if (isDark) {
-            // change hello, desc, and mode button to dark mode text
+            // Change hello, desc, and mode button to dark mode text
             helloText.text = getHelloWords()
             descText.text = geDescriptionWords()
             modeButton.text = getButtonWords()
 
-            // change hello text, desc text, and background to dark mode color
+            // Change hello text, desc text, and background to dark mode color
             helloText.setTextColor(Color.parseColor(getString(R.color.colorTextDark)))
             descText.setTextColor(Color.parseColor(getString(R.color.colorSecondaryTextDark)))
             window.decorView.setBackgroundColor(Color.parseColor(getString(R.color.colorDark)))
 
             isDark = false
         } else {
-            // change hello, desc, and mode button to light mode text
+            // Change hello, desc, and mode button to light mode text
             helloText.text = getHelloWords()
             descText.text = geDescriptionWords()
             modeButton.text = getButtonWords()
 
-            // change hello text, desc text, and background to light mode color
+            // Change hello text, desc text, and background to light mode color
             helloText.setTextColor(Color.parseColor(getString(R.color.colorLight)))
             descText.setTextColor(Color.parseColor(getString(R.color.colorLight)))
             window.decorView.setBackgroundColor(Color.parseColor(getString(R.color.colorTextLight)))
