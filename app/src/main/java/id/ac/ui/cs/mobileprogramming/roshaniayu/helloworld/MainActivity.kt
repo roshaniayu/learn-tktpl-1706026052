@@ -8,45 +8,70 @@ import android.widget.Button
 import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
-    var isDark : Boolean? = null
+    var isDark : Boolean = true
 
-    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        isDark = true
+        // When button clicks
+        val modeButton = findViewById<Button>(R.id.modeButton)
+        modeButton.setOnClickListener {
+            buttonModeClickListener()
+        }
+    }
+
+    @SuppressLint("ResourceType")
+    private fun buttonModeClickListener() {
         val helloText = findViewById<TextView>(R.id.helloText)
         val descText = findViewById<TextView>(R.id.descText)
         val modeButton = findViewById<Button>(R.id.modeButton)
 
-        // when button clicks
-        modeButton.setOnClickListener {
-            if (isDark == true) {
-                // change hello, desc, and mode button text
-                helloText.text = getString(R.string.hello_text_dark)
-                descText.text = getString(R.string.desc_text_dark)
-                modeButton.text = getString(R.string.light_mode)
+        if (isDark) {
+            // Change hello, desc, and mode button to dark mode text
+            helloText.text = getHelloWords()
+            descText.text = geDescriptionWords()
+            modeButton.text = getButtonWords()
 
-                // change hello text, desc text, and background color
-                helloText.setTextColor(Color.parseColor(getString(R.color.colorTextDark)))
-                descText.setTextColor(Color.parseColor(getString(R.color.colorSecondaryTextDark)))
-                window.decorView.setBackgroundColor(Color.parseColor(getString(R.color.colorDark)))
+            // Change hello text, desc text, and background to dark mode color
+            helloText.setTextColor(Color.parseColor(getString(R.color.colorTextDark)))
+            descText.setTextColor(Color.parseColor(getString(R.color.colorSecondaryTextDark)))
+            window.decorView.setBackgroundColor(Color.parseColor(getString(R.color.colorDark)))
 
-                isDark = false
-            } else {
-                // change hello, desc, and mode button text
-                helloText.text = getString(R.string.hello_text)
-                descText.text = getString(R.string.desc_text)
-                modeButton.text = getString(R.string.dark_mode)
+            isDark = false
+        } else {
+            // Change hello, desc, and mode button to light mode text
+            helloText.text = getHelloWords()
+            descText.text = geDescriptionWords()
+            modeButton.text = getButtonWords()
 
-                // change hello text, desc text, and background color
-                helloText.setTextColor(Color.parseColor(getString(R.color.colorLight)))
-                descText.setTextColor(Color.parseColor(getString(R.color.colorLight)))
-                window.decorView.setBackgroundColor(Color.parseColor(getString(R.color.colorTextLight)))
+            // Change hello text, desc text, and background to light mode color
+            helloText.setTextColor(Color.parseColor(getString(R.color.colorLight)))
+            descText.setTextColor(Color.parseColor(getString(R.color.colorLight)))
+            window.decorView.setBackgroundColor(Color.parseColor(getString(R.color.colorTextLight)))
 
-                isDark = true
-            }
+            isDark = true
         }
+    }
+
+    fun getHelloWords() : String {
+        if (isDark) {
+            return "Goodnight World!"
+        }
+        return getString(R.string.hello_text)
+    }
+
+    fun geDescriptionWords() : String {
+        if (isDark) {
+            return "See you on the next activity :)"
+        }
+        return getString(R.string.desc_text)
+    }
+
+    fun getButtonWords() : String {
+        if (isDark) {
+            return "Light Mode"
+        }
+        return getString(R.string.dark_mode)
     }
 }
