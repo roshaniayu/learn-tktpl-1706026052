@@ -1,11 +1,7 @@
 package id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld
 
-import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
-import android.view.MenuItem
-import android.widget.Button
-import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -26,8 +22,22 @@ class MainActivity : AppCompatActivity() {
 
             supportFragmentManager.beginTransaction().replace(R.id.fragment_container, selectedFragment).commit()
 
-            true }
+            true
+        }
 
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, HomeFragment()).commit()
+    }
+
+    override fun onBackPressed() {
+        AlertDialog.Builder(this)
+            .setMessage("Are you sure you want to close this app?")
+            .setPositiveButton("Yes") {
+                _, _ -> super.onBackPressed()
+                finish()
+            }
+            .setNegativeButton("No") {
+                _, _ ->
+            }
+            .show()
     }
 }
