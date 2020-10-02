@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 
 class HomeFragment : Fragment() {
-    var isDark : Boolean = true
+    var isDark: Boolean = true
 
     @SuppressLint("ResourceType")
     override fun onCreateView(
