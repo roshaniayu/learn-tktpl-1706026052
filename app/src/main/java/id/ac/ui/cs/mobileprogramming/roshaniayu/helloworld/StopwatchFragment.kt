@@ -24,7 +24,6 @@ class StopwatchFragment : Fragment() {
             startButton.isEnabled = false
             resetButton.isEnabled = false
         }
-
         (activity as MainActivity).stopwatchText = stopwatch
 
         startButton.setOnClickListener {

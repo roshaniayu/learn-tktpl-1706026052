@@ -31,10 +31,10 @@ class MainActivity : AppCompatActivity() {
             millisecondTime = SystemClock.uptimeMillis() - startTime
             updateTime = timeBuff + millisecondTime;
             seconds = (updateTime / 1000).toInt();
-            minutes = seconds!! / 60;
-            seconds = seconds!! % 60;
+            minutes = seconds / 60;
+            seconds %= 60;
             milliSeconds = (updateTime % 100).toInt();
-            mHandler!!.postDelayed(this.mRunnable, 0);
+            mHandler.postDelayed(this.mRunnable, 0);
             stopwatchText?.text =
                 (String.format("%02d", minutes) + ":" + String.format("%02d", seconds) + ":" + String.format("%02d", milliSeconds));
         }
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
 
     fun pauseStopwatch() {
         timeBuff += millisecondTime
-        mHandler?.removeCallbacks(mRunnable)
+        mHandler.removeCallbacks(mRunnable)
         stopwatchIsRunning = false
     }
 
