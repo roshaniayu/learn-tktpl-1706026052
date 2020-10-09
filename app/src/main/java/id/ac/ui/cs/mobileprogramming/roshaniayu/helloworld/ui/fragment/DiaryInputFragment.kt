@@ -44,7 +44,7 @@ class DiaryInputFragment : Fragment() {
             if (diaryString.trim().isEmpty() or nameString.trim().isEmpty()) {
                 (activity as MainActivity).hideKeyboard()
 
-                val warningToast = Toast.makeText(activity,"Text field can't be empty!",Toast.LENGTH_SHORT)
+                val warningToast = Toast.makeText(activity,"Text field can't be empty",Toast.LENGTH_SHORT)
                 warningToast.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 200)
                 warningToast.show()
             } else {
@@ -60,7 +60,8 @@ class DiaryInputFragment : Fragment() {
 
         readDiaryButton.setOnClickListener(View.OnClickListener {
             val fragmentTransaction: FragmentTransaction? = activity?.supportFragmentManager?.beginTransaction()
-            fragmentTransaction?.replace(R.id.fragment_container, DiaryFragment() )
+            fragmentTransaction?.replace(R.id.fragment_container, DiaryFragment())
+            fragmentTransaction?.addToBackStack("back_to_diary_input")
             fragmentTransaction?.commit()
         })
     }
