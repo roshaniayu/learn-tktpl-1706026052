@@ -1,4 +1,4 @@
-package id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld
+package id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld.MainActivity
+import id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld.R
 
 class StopwatchFragment : Fragment() {
     override fun onCreateView(

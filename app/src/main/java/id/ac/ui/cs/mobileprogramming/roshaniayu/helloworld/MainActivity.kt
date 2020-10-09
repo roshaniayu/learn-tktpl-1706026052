@@ -1,13 +1,16 @@
 package id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld.ui.fragment.DiaryInputFragment
+import id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld.ui.fragment.StopwatchFragment
 
 class MainActivity : AppCompatActivity() {
     var stopwatchIsRunning: Boolean = false
@@ -34,17 +37,17 @@ class MainActivity : AppCompatActivity() {
             minutes = seconds / 60;
             seconds %= 60;
             milliSeconds = (updateTime % 100).toInt();
-            mHandler.postDelayed(this.mRunnable, 0);
+            mHandler.postDelayed(mRunnable, 0);
             stopwatchText?.text =
                 (String.format("%02d", minutes) + ":" + String.format("%02d", seconds) + ":" + String.format("%02d", milliSeconds));
         }
 
         val bottomNav: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNav.setOnNavigationItemSelectedListener { item ->
-            var selectedFragment: Fragment = HomeFragment()
+            var selectedFragment: Fragment = DiaryInputFragment()
 
             when (item.itemId) {
-                R.id.nav_home -> selectedFragment = HomeFragment()
+                R.id.nav_home -> selectedFragment = DiaryInputFragment()
                 R.id.nav_stopwatch -> selectedFragment = StopwatchFragment()
             }
 
@@ -54,20 +57,15 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, HomeFragment())
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
+            DiaryInputFragment()
+        )
             .commit()
     }
 
-    override fun onBackPressed() {
-        AlertDialog.Builder(this)
-            .setMessage("Are you sure you want to close this app?")
-            .setPositiveButton("Yes") { _, _ ->
-                super.onBackPressed()
-                finish()
-            }
-            .setNegativeButton("No") { _, _ ->
-            }
-            .show()
+    fun hideKeyboard() {
+        val inputManager: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.SHOW_FORCED)
     }
 
     fun startStopwatch() {
