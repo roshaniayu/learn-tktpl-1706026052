@@ -1,52 +1,92 @@
 package id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld
 
-import android.annotation.SuppressLint
-import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
 import android.os.Bundle
-import android.widget.Button
+import android.os.Handler
+import android.os.SystemClock
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld.ui.fragment.DiaryInputFragment
+import id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld.ui.fragment.StopwatchFragment
 
 class MainActivity : AppCompatActivity() {
-    var isDark : Boolean? = null
+    var stopwatchIsRunning: Boolean = false
+    var stopwatchText: TextView? = null
+    private var millisecondTime: Long = 0
+    private var startTime: Long = 0
+    private var timeBuff: Long = 0
+    private var updateTime: Long = 0
+    private var seconds: Int = 0
+    private var minutes: Int = 0
+    private var milliSeconds: Int = 0
+    private lateinit var mHandler: Handler
+    private lateinit var mRunnable: Runnable
 
-    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        isDark = true
-        val helloText = findViewById<TextView>(R.id.helloText)
-        val descText = findViewById<TextView>(R.id.descText)
-        val modeButton = findViewById<Button>(R.id.modeButton)
-
-        // when button clicks
-        modeButton.setOnClickListener {
-            if (isDark == true) {
-                // change hello, desc, and mode button text
-                helloText.text = getString(R.string.hello_text_dark)
-                descText.text = getString(R.string.desc_text_dark)
-                modeButton.text = getString(R.string.light_mode)
-
-                // change hello text, desc text, and background color
-                helloText.setTextColor(Color.parseColor(getString(R.color.colorTextDark)))
-                descText.setTextColor(Color.parseColor(getString(R.color.colorSecondaryTextDark)))
-                window.decorView.setBackgroundColor(Color.parseColor(getString(R.color.colorDark)))
-
-                isDark = false
-            } else {
-                // change hello, desc, and mode button text
-                helloText.text = getString(R.string.hello_text)
-                descText.text = getString(R.string.desc_text)
-                modeButton.text = getString(R.string.dark_mode)
-
-                // change hello text, desc text, and background color
-                helloText.setTextColor(Color.parseColor(getString(R.color.colorLight)))
-                descText.setTextColor(Color.parseColor(getString(R.color.colorLight)))
-                window.decorView.setBackgroundColor(Color.parseColor(getString(R.color.colorTextLight)))
-
-                isDark = true
-            }
+        mHandler = Handler()
+        mRunnable = Runnable {
+            millisecondTime = SystemClock.uptimeMillis() - startTime
+            updateTime = timeBuff + millisecondTime;
+            seconds = (updateTime / 1000).toInt();
+            minutes = seconds / 60;
+            seconds %= 60;
+            milliSeconds = (updateTime % 100).toInt();
+            mHandler.postDelayed(mRunnable, 0);
+            stopwatchText?.text =
+                (String.format("%02d", minutes) + ":" + String.format("%02d", seconds) + ":" + String.format("%02d", milliSeconds));
         }
+
+        val bottomNav: BottomNavigationView = findViewById(R.id.bottom_navigation)
+        bottomNav.setOnNavigationItemSelectedListener { item ->
+            var selectedFragment: Fragment = DiaryInputFragment()
+
+            when (item.itemId) {
+                R.id.nav_home -> selectedFragment = DiaryInputFragment()
+                R.id.nav_stopwatch -> selectedFragment = StopwatchFragment()
+            }
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, selectedFragment).commit()
+
+            true
+        }
+
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
+            DiaryInputFragment()
+        )
+            .commit()
+    }
+
+    fun hideKeyboard() {
+        val inputManager: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.SHOW_FORCED)
+    }
+
+    fun startStopwatch() {
+        startTime = SystemClock.uptimeMillis()
+        mHandler.postDelayed(mRunnable, 0)
+        stopwatchIsRunning = true
+    }
+
+    fun pauseStopwatch() {
+        timeBuff += millisecondTime
+        mHandler.removeCallbacks(mRunnable)
+        stopwatchIsRunning = false
+    }
+
+    fun resetStopwatch() {
+        millisecondTime = 0
+        startTime = 0
+        timeBuff = 0
+        updateTime = 0
+        seconds = 0
+        minutes = 0
+        milliSeconds = 0
     }
 }
