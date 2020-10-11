@@ -2,7 +2,6 @@ package id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld.data.model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld.data.model.Diary
 
 class DummyDiaryDao {
     private val diaryList = mutableListOf<Diary>()

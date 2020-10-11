@@ -1,6 +1,6 @@
 package id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld.data.model
 
-class DummyDatabase private constructor(){
+class DummyDatabase private constructor() {
     var diaryDao =
         DummyDiaryDao()
         private set
