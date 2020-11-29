@@ -9,6 +9,8 @@ import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -16,10 +18,17 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers.Main
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
+    private val wifiList = mutableListOf<WifiModel>()
     private lateinit var wifiManager: WifiManager
     private lateinit var recyclerView: RecyclerView
+    private lateinit var retrofit: ApiService
+    private lateinit var sendButton: Button
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +41,19 @@ class MainActivity : AppCompatActivity() {
             requestForSpecificPermission();
         } else{
             startWifiScanning()
+        }
+
+        retrofit = RetrofitClient.RETROFIT_SERVICE
+        sendButton = findViewById(R.id.send_button)
+        sendButton.setOnClickListener {
+            GlobalScope.launch(Main) {
+                val response: Response<ResponseModel> = retrofit.submitWifiList(wifiList)
+                if (response.isSuccessful) {
+                    Toast.makeText(this@MainActivity, "List of Wi-Fi sent", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@MainActivity, "Failed to send", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -95,16 +117,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun scanSuccess() {
         val results = wifiManager.scanResults
-        val adapterList =  mutableListOf<String>()
+        val adapterList = mutableListOf<String>()
         for (res in results) {
             adapterList.add(res.SSID)
+
+            val wifiModel = WifiModel()
+            wifiModel.wifiName = res.SSID
+            wifiList.add(wifiModel)
         }
+
         recyclerView.layoutManager = LinearLayoutManager(applicationContext)
         val recyclerAdapter = WifiAdapter(adapterList)
         recyclerView.adapter = recyclerAdapter
+        sendButton.visibility = View.VISIBLE
     }
 
     private fun scanFailure() {
-        Toast.makeText(this, "Failed to scan any wifi nearby", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Failed to scan any Wi-Fi nearby", Toast.LENGTH_SHORT).show()
     }
 }
