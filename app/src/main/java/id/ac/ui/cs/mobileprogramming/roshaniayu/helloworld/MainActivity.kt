@@ -1,52 +1,110 @@
 package id.ac.ui.cs.mobileprogramming.roshaniayu.helloworld
 
-import android.annotation.SuppressLint
-import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
+import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.net.wifi.WifiManager
+import android.os.Build
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
-    var isDark : Boolean? = null
+    private lateinit var wifiManager: WifiManager
+    private lateinit var recyclerView: RecyclerView
 
-    @SuppressLint("ResourceType")
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        isDark = true
-        val helloText = findViewById<TextView>(R.id.helloText)
-        val descText = findViewById<TextView>(R.id.descText)
-        val modeButton = findViewById<Button>(R.id.modeButton)
+        recyclerView = findViewById(R.id.recycler_view)
+        wifiManager = applicationContext?.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        if (!checkIfAlreadyHavePermission()) {
+            requestForSpecificPermission();
+        } else{
+            startWifiScanning()
+        }
+    }
 
-        // when button clicks
-        modeButton.setOnClickListener {
-            if (isDark == true) {
-                // change hello, desc, and mode button text
-                helloText.text = getString(R.string.hello_text_dark)
-                descText.text = getString(R.string.desc_text_dark)
-                modeButton.text = getString(R.string.light_mode)
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun checkIfAlreadyHavePermission(): Boolean {
+        val result = applicationContext.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_COARSE_LOCATION) }
+        return result == PackageManager.PERMISSION_GRANTED
+    }
 
-                // change hello text, desc text, and background color
-                helloText.setTextColor(Color.parseColor(getString(R.color.colorTextDark)))
-                descText.setTextColor(Color.parseColor(getString(R.color.colorSecondaryTextDark)))
-                window.decorView.setBackgroundColor(Color.parseColor(getString(R.color.colorDark)))
+    private fun requestForSpecificPermission() {
+        let {
+            ActivityCompat.requestPermissions(
+                it,
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_WIFI_STATE
+                ),
+                101
+            )
+        }
+    }
 
-                isDark = false
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            101 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startWifiScanning()
             } else {
-                // change hello, desc, and mode button text
-                helloText.text = getString(R.string.hello_text)
-                descText.text = getString(R.string.desc_text)
-                modeButton.text = getString(R.string.dark_mode)
+                // not granted
+            }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
 
-                // change hello text, desc text, and background color
-                helloText.setTextColor(Color.parseColor(getString(R.color.colorLight)))
-                descText.setTextColor(Color.parseColor(getString(R.color.colorLight)))
-                window.decorView.setBackgroundColor(Color.parseColor(getString(R.color.colorTextLight)))
-
-                isDark = true
+    private fun startWifiScanning(){
+        val wifiScanReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)
+                if (success) {
+                    scanSuccess()
+                } else {
+                    scanFailure()
+                }
             }
         }
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
+        applicationContext?.registerReceiver(wifiScanReceiver, intentFilter)
+
+        val success = wifiManager.startScan()
+        if (!success) {
+            // scan failure handling
+            scanFailure()
+        }
+    }
+
+    private fun scanSuccess() {
+        val results = wifiManager.scanResults
+        val adapterList =  mutableListOf<String>()
+        for (res in results) {
+            adapterList.add(res.SSID)
+        }
+        recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+        val recyclerAdapter = WifiAdapter(adapterList)
+        recyclerView.adapter = recyclerAdapter
+    }
+
+    private fun scanFailure() {
+        Toast.makeText(this, "Failed to scan any wifi nearby", Toast.LENGTH_SHORT).show()
     }
 }
